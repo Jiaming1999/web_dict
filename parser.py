@@ -4,8 +4,9 @@ import os
 import re
 import unicodedata
 import warnings
-from enum import unique, Enum
-from functools import wraps
+from enum import unique, Enum, auto
+from functools import wraps, reduce
+from operator import add
 from pathlib import Path
 from pprint import pprint
 
@@ -20,7 +21,40 @@ class WebDictSeg(Enum):
     SpanishEnglish = 1
 
 
+@unique
+class TransLang(Enum):
+    Swedish = auto()
+    Norwegian = auto()
+    Spanish = auto()
+    British_English = auto()
+    Dutch = auto()
+    Chinese = auto()
+    Finnish = auto()
+    Ukrainian = auto()
+    Polish = auto()
+    Croatian = auto()
+    Korean = auto()
+    Brazilian_Portuguese = auto()
+    Thai = auto()
+    Danish = auto()
+    European_Spanish = auto()
+    Turkish = auto()
+    French = auto()
+    Italian = auto()
+    Japanese = auto()
+    Russian = auto()
+    Arabic = auto()
+    Czech = auto()
+    German = auto()
+    Romanian = auto()
+    Vietnamese = auto()
+    Greek = auto()
+    American_English = auto()
+    European_Portuguese = auto()
+
+
 # region Decorators
+
 
 def _decExtract(prop='text', ignore_warnings=False, convert_to_type=None):
     def wrapper(func):
@@ -112,14 +146,19 @@ class _Parser:
         self.archive_dir = Path(archive_dir, seg.name, )
         self.archive_dir.mkdir(exist_ok=True, parents=True)
 
+        self._trans_langs_json_file = None
+        self._trans_langs = []
+        self.json = {}
+
         if self._use_archive:
             self._archive_json = Path(self.archive_dir, f'{self._word}.json')
+            self._trans_langs_json_file = Path(archive_dir, f'trans_langs.json')
             if self._archive_json.is_file():
                 self.json = json.load(self._archive_json.open())
+            if not self._trans_langs_json_file.is_file():
+                json.dump(self._trans_langs, self._trans_langs_json_file.open('w'))
             else:
-                self.json = {}
-        else:
-            self.json = {}
+                self._trans_langs = json.load(self._trans_langs_json_file.open())
 
         if self._download_audio:
             self.audio_dir = Path(self.archive_dir, 'audio')
@@ -137,6 +176,13 @@ class _Parser:
             if not self.audio_file.is_file():
                 self._download_media(_, self.audio_file)
         return _
+
+    def set_trans_lang(self, lang):
+        self._trans_langs = set(self._trans_langs)
+        self._trans_langs.add(lang)
+        if self._trans_langs_json_file and self._trans_langs_json_file.is_file():
+            json.dump(list(self._trans_langs), self._trans_langs_json_file.open('w'),
+                      indent=True, ensure_ascii=False)
 
     @property
     def bs(self):
@@ -197,6 +243,7 @@ class _Parser:
         _ = {}
         for trans_dict in trans_data:
             lang = trans_dict['lang']
+            self.set_trans_lang(lang)
             orth = trans_dict['orth']
             _.setdefault(lang, [])
             _[lang].append(orth)
@@ -248,55 +295,50 @@ class _SpanishEnglishDef(_Parser):
             assert isinstance(senceTag, bs4.Tag)
             colloc = ''
             syn = ''
+            trans = ''
             subject = ''
+            geo, register = ['', ] * 2
             grama_grp_tag = self.fo('gramGrp', bs_obj=senceTag)
+
             if grama_grp_tag:
                 colloc_tag = self.fo('colloc', bs_obj=grama_grp_tag)
                 colloc = colloc_tag.text
-            cite_trans_tag = self.fo('type-translation', bs_obj=senceTag)
-            if cite_trans_tag and 'type-example' not in cite_trans_tag.parent['class']:
-                if 'sense' in cite_trans_tag.parent['class']:
-                    trans = unicodedata.normalize("NFKD", cite_trans_tag.parent.text)
-                    try:
-                        subj_tag = [t for t in list(cite_trans_tag.parent.children)
-                                    if isinstance(t, bs4.Tag) and 'type-subj' in t['class']][0]
-                        subject = re.match("\((.+)\)", subj_tag.text.strip()).group(1)
-                    except:
-                        pass
-                else:
-                    trans = unicodedata.normalize("NFKD", cite_trans_tag.text)
-                trans = trans.replace('⧫', "/")
+            child_tags = [t for t in list(senceTag.children)
+                          if isinstance(t, bs4.Tag)]
 
-                # remove index
-                m = re.match("(\d+)\.\s+(.+)", trans)
-                explain_index, trans = m.groups() if m else [''] * 2
-
-                # 1. (= xxxx) .......
-                m = re.match("\(=\s?([(?u)\w\s?]+)\)\s(.+)", trans)
-                if m:
-                    syn, trans = m.groups()
-
-            else:
-                trans = ''
+            _find_tag_txt = lambda cls_nm: unicodedata.normalize("NFKD",
+                                                                 [t for t in child_tags
+                                                                  if cls_nm in t['class']][0].text)
+            try:
+                trans = _find_tag_txt('type-translation')
+            except:
+                pass
+            try:
+                subject = _find_tag_txt('type-subj')
+            except:
+                pass
 
             # region type-geo
-            tag_type_geo = self.fo('type-geo', bs_obj=senceTag)
-            if tag_type_geo:
-                type_geo = unicodedata.normalize("NFKD", tag_type_geo.text)
+            try:
+                type_geo = _find_tag_txt('type-geo')
                 type_geo_match = re.match('\((.+\w+)\)?\s\((.+\w+)\)?\s\((.+\w+)\)', type_geo)
                 if type_geo_match:
                     geo, register, syn = type_geo_match.groups()
-                else:
-                    geo, register = ['', ] * 2
-            else:
-                type_geo = ''
-                geo, register = ['', ] * 2
+            except:
+                pass
 
             if not trans:
-                if syn:
-                    trans = syn
-                else:
-                    trans = type_geo
+                trans = syn
+
+            # remove [....]
+            m = re.match("(\[.+\])\s+(.+)", trans)
+            if m:
+                ss_, trans = m.groups()
+
+            # 1. (= xxxx) .......
+            m = re.match("\(=\s?([(?u)\w\s?]+)\)\s(.+)", trans)
+            if m:
+                syn, trans = m.groups()
 
             # endregion
 
@@ -321,6 +363,8 @@ class _SpanishEnglishDef(_Parser):
             _.append(
                 {
                     'colloc': colloc,
+                    'geo': geo,
+                    'register': register,
                     'misc': misc,
                     'syn': syn,
                     'subj': subject,
@@ -410,8 +454,32 @@ class SpanishEnglish(_Parser):
         """
         return _SpanishEnglishDef('', None, **self.to_dict['defs'][item])
 
+    def get_langs_trans(self, lang):
+        """
+
+        :param lang: TransLang member or reg pattern string
+        :type lang: TransLang or str
+        :return:
+        """
+        if isinstance(lang, str):
+            _ = []
+            for name, member in TransLang.__members__.items():
+                if re.match(lang, name):
+                    _.append(member)
+
+        else:
+            _ = [lang, ]
+        return ", ".join(list(
+            set(reduce(add, [self.PropTranslations.get(lg.name.replace("_", " "), []) for lg in _]))
+        ))
+
 
 if __name__ == '__main__':
-    for w in ['ahora',]:
+    for w in ['llamarse', 'dia', 'ahora', 'proyecto']:
         p = SpanishEnglish(w)
-        pprint(p.to_dict)
+        pprint(
+            (w,
+             p.get_langs_trans('.+English'),
+             p.get_langs_trans(lang=TransLang.Chinese)
+             )
+        )

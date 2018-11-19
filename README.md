@@ -2,168 +2,375 @@
 
 ## - Spanish - English
 
-### Calls
+### Calls 
+
+#### Get single lang's concise explains/translations
+```python
+from parser import SpanishEnglish,TransLang
+p = SpanishEnglish('ahora')
+p.get_langs_trans('.+English'),
+p.get_langs_trans(lang=TransLang.Chinese)
+```
+
+#### Result
+```json
+["now", "现在"]
+```
+
+
+#### Get all dictionary-formated 
 ```python
 from parser import SpanishEnglish
 
-SpanishEnglish('encantada')
+print(SpanishEnglish('encantada').to_dict)
+
 ```
 
-### Result:
+#### Result:
 ```json
 {
  "frequency": {
-  "title": "Used Occasionally. encantar is one of the 30000 most commonly used words in the Collins dictionary",
-  "score": 2
+  "title": "Extremely Common. día is one of the 1000 most commonly used words in the Collins dictionary",
+  "rank": 1000,
+  "score": 5
  },
  "translations": {
   "British English": [
-   "love",
-   "enchant",
-   "delight"
+   "day",
+   "daytime"
   ],
   "American English": [
-   "love",
-   "enchant",
-   "delight"
+   "day",
+   "daytime"
   ],
   "Arabic": [
-   "يُحِبُّ"
+   "يَوْم",
+   "نَهَار"
   ],
   "Brazilian Portuguese": [
-   "encantar",
-   "adorar",
-   "deleitar"
+   "dia"
   ],
   "Chinese": [
-   "使高兴",
-   "喜爱",
-   "使陶醉"
+   "白天",
+   "日间"
   ],
   "Croatian": [
-   "voljeti"
+   "dan"
   ],
   "Czech": [
-   "zbožňovat"
+   "den"
   ],
   "Danish": [
-   "elsker"
+   "dagtimer",
+   "dag"
   ],
   "Dutch": [
-   "houden van"
+   "overdag",
+   "dag"
   ],
   "European Spanish": [
-   "encantar"
+   "día"
   ],
   "Finnish": [
-   "rakastaa"
+   "päiväsaika",
+   "päivä"
   ],
   "French": [
-   "aimer beaucoup",
-   "enchanter"
+   "jour",
+   "journée"
   ],
   "German": [
-   "gern mögen",
-   "bezaubern",
-   "erfreuen"
+   "Tag"
   ],
   "Greek": [
-   "αγαπώ"
+   "ημέρα"
   ],
   "Italian": [
-   "amare",
-   "incantare",
-   "dilettare"
+   "giorno"
   ],
   "Japanese": [
-   "･･･が大好きだ",
-   "大いに楽しませる",
-   "魅了する"
+   "昼間",
+   "日",
+   "一日"
   ],
   "Korean": [
-   "사랑하다",
-   "즐겁게 하다",
-   "~에 매혹되다"
+   "주간",
+   "낮",
+   "하루"
   ],
   "Norwegian": [
-   "elske"
+   "dag",
+   "dagtid"
   ],
   "Polish": [
-   "uwielbiać"
+   "dzień"
   ],
   "European Portuguese": [
-   "encantar",
-   "adorar",
-   "deleitar"
+   "dia"
   ],
   "Romanian": [
-   "a-i plăcea"
+   "zi"
   ],
   "Russian": [
-   "любить"
+   "сутки",
+   "светлое время суток",
+   "световой день"
   ],
   "Spanish": [
-   "encantar"
+   "día"
   ],
   "Swedish": [
-   "älska"
+   "dag"
   ],
   "Thai": [
-   "รัก ชื่นชอบ"
+   "กลางวัน",
+   "วัน",
+   "เวลากลางวัน"
   ],
   "Turkish": [
-   "sevmek"
+   "gündüz",
+   "gün"
   ],
   "Ukrainian": [
-   "любити"
+   "денний час",
+   "день"
   ],
   "Vietnamese": [
-   "yêu"
+   "ngày",
+   "ban ngày"
   ]
  },
- "entry_title": "English translation of 'encantar'",
- "orth": "encantar",
+ "entry_title": "English translation of 'día'",
+ "orth": "día",
  "url": {
-  "audio": "https://www.collinsdictionary.com/sounds/e/es_/es_41/es_419_a0018463.mp3"
+  "audio": "https://www.collinsdictionary.com/sounds/e/es_/es_41/es_419_w0022690.mp3"
  },
  "audio": {
-  "name": "encantando.mp3"
+  "name": "dia.mp3"
  },
  "defs": [
   {
-   "verb_table_url": "https://www.collinsdictionary.com/dictionary/spanish-english/conjugation/encantar",
-   "pos": "intransitive verb",
+   "verb_table_url": null,
+   "pos": "masculine noun",
    "explains": [
     {
      "colloc": "",
-     "misc": "(con complemento personal)",
-     "trans": "(con complemento personal) to loveme encanta tu casa I love your houseme encantan las flores I adore or love flowersme encantaría que vinieras I’d be delighted if you come / I’d love you to come",
+     "geo": "",
+     "register": "",
+     "misc": "",
+     "syn": "",
+     "subj": "",
+     "trans": "day",
      "examples": [
       {
-       "sentence": "me encanta tu casa",
-       "trans": "I love your house"
+       "sentence": "pasaré un par de días en la playa",
+       "trans": "I’ll spend a couple of days at the beach"
       },
       {
-       "sentence": "me encantan las flores",
-       "trans": "I adore or love flowers"
+       "sentence": "todos los días",
+       "trans": "every day"
       },
       {
-       "sentence": "me encantaría que vinieras",
-       "trans": "I’d be delighted if you come"
+       "sentence": "pollitos de un día",
+       "trans": "day-old chicks"
+      },
+      {
+       "sentence": "a los pocos días",
+       "trans": "within or after a few days"
+      },
+      {
+       "sentence": "prefiero el día a día",
+       "trans": "I prefer to do things from one day to the next or on a day-to-day basis"
+      },
+      {
+       "sentence": "el día a día en la gestión financiera de la empresa",
+       "trans": "the day-to-day running of the company’s financial business"
+      },
+      {
+       "sentence": "tres horas al día",
+       "trans": "three hours a day"
+      },
+      {
+       "sentence": "al otro día",
+       "trans": "the following day"
+      },
+      {
+       "sentence": "al día siguiente",
+       "trans": "the following day"
+      },
+      {
+       "sentence": "menú del día",
+       "trans": "today’s menu"
+      },
+      {
+       "sentence": "pan del día",
+       "trans": "fresh bread"
       }
      ]
-    }
-   ]
-  },
-  {
-   "verb_table_url": "https://www.collinsdictionary.com/dictionary/spanish-english/conjugation/encantar",
-   "pos": "transitive verb",
-   "explains": [
+    },
     {
      "colloc": "",
+     "geo": "",
+     "register": "",
      "misc": "",
-     "trans": "to cast a spell on or over / bewitch",
-     "examples": []
+     "syn": "",
+     "subj": "",
+     "trans": "daytime",
+     "examples": [
+      {
+       "sentence": "durante el día",
+       "trans": "during the day(time)"
+      },
+      {
+       "sentence": "en pleno día",
+       "trans": "in broad daylight"
+      },
+      {
+       "sentence": "hace buen día",
+       "trans": "the weather’s good today"
+      },
+      {
+       "sentence": "dar los buenos días a algn",
+       "trans": "to say good morning to sb"
+      },
+      {
+       "sentence": "duerme de día y trabaja de noche",
+       "trans": "he sleeps by day and works by night"
+      },
+      {
+       "sentence": "ya es de día",
+       "trans": "it’s already light"
+      },
+      {
+       "sentence": "mientras sea de día",
+       "trans": "while it’s still light"
+      }
+     ]
+    },
+    {
+     "colloc": "",
+     "geo": "",
+     "register": "",
+     "misc": "(del mes)",
+     "syn": "",
+     "subj": "",
+     "trans": "date",
+     "examples": [
+      {
+       "sentence": "¿qué día es hoy?",
+       "trans": "what’s the date today?"
+      },
+      {
+       "sentence": "iré pronto, pero no puedo precisar el día",
+       "trans": "I’ll be going soon, but I can’t give an exact date"
+      },
+      {
+       "sentence": "llegará el día dos de mayo",
+       "trans": "he’ll arrive on the second of May"
+      },
+      {
+       "sentence": "hoy, día cinco de agosto",
+       "trans": "today, fifth August"
+      },
+      {
+       "sentence": "día lunes/martes etc",
+       "trans": "Monday/Tuesday etc"
+      }
+     ]
+    },
+    {
+     "colloc": "",
+     "geo": "",
+     "register": "",
+     "misc": "(referido al futuro)",
+     "syn": "",
+     "subj": "",
+     "trans": "",
+     "examples": [
+      {
+       "sentence": "algún día",
+       "trans": "some day"
+      },
+      {
+       "sentence": "un buen día",
+       "trans": "one fine day"
+      },
+      {
+       "sentence": "cada día es peor",
+       "trans": "it’s getting worse every day or by the day"
+      },
+      {
+       "sentence": "un día de estos",
+       "trans": "one of these days"
+      },
+      {
+       "sentence": "el día menos pensado",
+       "trans": "when you least expect it"
+      },
+      {
+       "sentence": "en los días de la reina Victoria",
+       "trans": "in Queen Victoria’s day"
+      },
+      {
+       "sentence": "cualquier día tendrá un accidente",
+       "trans": "he’s going to have an accident one of these days or any day now"
+      },
+      {
+       "sentence": "¡cualquier día!",
+       "trans": "not on your life!"
+      },
+      {
+       "sentence": "cualquier día viene",
+       "trans": "we’ll be waiting till the cows come home for him to turn up"
+      },
+      {
+       "sentence": "¡cualquier día te voy a comprar una casa!",
+       "trans": "if you think I’m going to buy you a house you’ve got another think coming!"
+      },
+      {
+       "sentence": "la prensa de nuestros días",
+       "trans": "today’s press"
+      },
+      {
+       "sentence": "uno de los principales problemas de nuestros días",
+       "trans": "one of the major problems of our day or our times"
+      },
+      {
+       "sentence": "ha durado hasta nuestros días",
+       "trans": "it has lasted to the present day"
+      },
+      {
+       "sentence": "dejémoslo para otro día",
+       "trans": "let’s leave it for the moment or for another day"
+      },
+      {
+       "sentence": "¡hasta otro día!",
+       "trans": "so long!"
+      }
+     ]
+    },
+    {
+     "colloc": "[estilo]",
+     "geo": "",
+     "register": "",
+     "misc": "",
+     "syn": "",
+     "subj": "",
+     "trans": "",
+     "examples": [
+      {
+       "sentence": "pescado del día",
+       "trans": "fresh fish"
+      },
+      {
+       "sentence": "quien quiera estar al día en esta especialidad, que lea ...",
+       "trans": "anyone who wishes to keep up to date with this area of study, should read ..."
+      },
+      {
+       "sentence": "está al día vestir así",
+       "trans": "it’s the thing to dress like that"
+      }
+     ]
     }
    ]
   }
