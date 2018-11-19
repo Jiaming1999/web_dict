@@ -247,6 +247,8 @@ class _SpanishEnglishDef(_Parser):
                 continue
             assert isinstance(senceTag, bs4.Tag)
             colloc = ''
+            syn = ''
+            subject = ''
             grama_grp_tag = self.fo('gramGrp', bs_obj=senceTag)
             if grama_grp_tag:
                 colloc_tag = self.fo('colloc', bs_obj=grama_grp_tag)
@@ -255,9 +257,25 @@ class _SpanishEnglishDef(_Parser):
             if cite_trans_tag and 'type-example' not in cite_trans_tag.parent['class']:
                 if 'sense' in cite_trans_tag.parent['class']:
                     trans = unicodedata.normalize("NFKD", cite_trans_tag.parent.text)
+                    try:
+                        subj_tag = [t for t in list(cite_trans_tag.parent.children)
+                                    if isinstance(t, bs4.Tag) and 'type-subj' in t['class']][0]
+                        subject = re.match("\((.+)\)", subj_tag.text.strip()).group(1)
+                    except:
+                        pass
                 else:
                     trans = unicodedata.normalize("NFKD", cite_trans_tag.text)
                 trans = trans.replace('⧫', "/")
+
+                # remove index
+                m = re.match("(\d+)\.\s+(.+)", trans)
+                explain_index, trans = m.groups() if m else [''] * 2
+
+                # 1. (= xxxx) .......
+                m = re.match("\(=\s?(.+)\)\s+(.+)", trans)
+                if m:
+                    syn, trans = m.groups()
+
             else:
                 trans = ''
 
@@ -269,10 +287,10 @@ class _SpanishEnglishDef(_Parser):
                 if type_geo_match:
                     geo, register, syn = type_geo_match.groups()
                 else:
-                    geo, register, syn = ['', ] * 3
+                    geo, register = ['', ] * 2
             else:
                 type_geo = ''
-                geo, register, syn = ['', ] * 3
+                geo, register = ['', ] * 2
 
             if not trans:
                 if syn:
@@ -304,6 +322,8 @@ class _SpanishEnglishDef(_Parser):
                 {
                     'colloc': colloc,
                     'misc': misc,
+                    'syn': syn,
+                    'subj': subject,
                     'trans': unicodedata.normalize("NFKD", trans.split("\n")[0].strip()),
                     'examples': examples
                 }
@@ -359,6 +379,7 @@ class SpanishEnglish(_Parser):
         return {
             'frequency': {
                 'title': self.PropFrequencyTitle,
+                'rank': self.FrequencyRank,
                 'score': self.PropFrequencyScore
             },
 
@@ -373,6 +394,14 @@ class SpanishEnglish(_Parser):
             'defs': self.defs,
         }
 
+    @property
+    @_decArchive('rank', 'frequency')
+    def FrequencyRank(self):
+        try:
+            return int((re.search("(\d+)", self.PropFrequencyTitle).group(1)))
+        except:
+            pass
+
     def __getitem__(self, item):
         """
 
@@ -383,6 +412,6 @@ class SpanishEnglish(_Parser):
 
 
 if __name__ == '__main__':
-    for w in ['encantando']:
+    for w in ['proyecto']:
         p = SpanishEnglish(w)
         pprint(p.to_dict)
