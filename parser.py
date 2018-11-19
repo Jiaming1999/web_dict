@@ -200,6 +200,7 @@ class _Parser:
             orth = trans_dict['orth']
             _.setdefault(lang, [])
             _[lang].append(orth)
+            _[lang] = list(set(_[lang]))
         return _
 
     @property
@@ -210,7 +211,6 @@ class _Parser:
     @property
     @_decArchive('content_bytes', pk='audio')
     def PropAudioFileContent(self):
-        return None
         if self.audio_file and self.audio_file.is_file():
             _ = base64.encodebytes(self.audio_file.read_bytes())
             return _
@@ -368,7 +368,7 @@ class SpanishEnglish(_Parser):
             "word": self._word,
             'audio': {'url': self.WordSoundUrl,
                       'name': self.PropAudioFileName,
-                      'content': self.PropAudioFileContent
+                      # 'content': self.PropAudioFileContent
                       },
             'defs': self.defs,
         }
