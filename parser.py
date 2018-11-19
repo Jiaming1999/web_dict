@@ -272,7 +272,7 @@ class _SpanishEnglishDef(_Parser):
                 explain_index, trans = m.groups() if m else [''] * 2
 
                 # 1. (= xxxx) .......
-                m = re.match("\(=\s?(.+)\)\s+(.+)", trans)
+                m = re.match("\(=\s?([(?u)\w\s?]+)\)\s(.+)", trans)
                 if m:
                     syn, trans = m.groups()
 
@@ -412,6 +412,6 @@ class SpanishEnglish(_Parser):
 
 
 if __name__ == '__main__':
-    for w in ['proyecto']:
+    for w in ['ahora',]:
         p = SpanishEnglish(w)
         pprint(p.to_dict)
