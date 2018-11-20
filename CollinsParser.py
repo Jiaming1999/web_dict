@@ -19,6 +19,7 @@ WEB_ROOT = 'https://www.collinsdictionary.com/dictionary'
 @unique
 class WebDictSeg(Enum):
     SpanishEnglish = 1
+    English = 2
 
 
 @unique
@@ -123,7 +124,10 @@ class _Parser:
 
     @property
     def _segDef(self):
-        return {1: 'spanish-english'}[self._seg.value]
+        return {
+            1: 'spanish-english',
+            2: 'english',
+        }[self._seg.value]
 
     @property
     def RqstUrl(self):
@@ -259,7 +263,7 @@ class _Parser:
     @_decArchive('content_bytes', pk='audio')
     def PropAudioFileContent(self):
         if self.audio_file and self.audio_file.is_file():
-            _ = base64.encodebytes(self.audio_file.read_bytes())
+            _ = base64.encodebytes(self.audio_file.read_bytes()).decode()
             return _
 
 
@@ -290,7 +294,10 @@ class _SpanishEnglishDef(_Parser):
     def PropExplains(self):
         _ = []
         for senceTag in list(self.bs.children):
-            if 'sense' not in senceTag['class']:
+            try:
+                if 'sense' not in senceTag['class']:
+                    continue
+            except:
                 continue
             assert isinstance(senceTag, bs4.Tag)
             colloc = ''
@@ -302,19 +309,46 @@ class _SpanishEnglishDef(_Parser):
 
             if grama_grp_tag:
                 colloc_tag = self.fo('colloc', bs_obj=grama_grp_tag)
-                colloc = colloc_tag.text
+                if colloc_tag:
+                    colloc = colloc_tag.text
             child_tags = [t for t in list(senceTag.children)
                           if isinstance(t, bs4.Tag)]
 
-            _find_tag_txt = lambda cls_nm: unicodedata.normalize("NFKD",
-                                                                 [t for t in child_tags
-                                                                  if cls_nm in t['class']][0].text)
+            _find_tag_txt = lambda cls_nm, tgs=child_tags: unicodedata.normalize("NFKD",
+                                                                                 [t for t in tgs
+                                                                                  if cls_nm in t['class']][0].text)
             try:
                 trans = _find_tag_txt('type-translation')
             except:
-                pass
+                try:
+                    trans_list = []
+                    for t in child_tags:
+                        try:
+                            if 'sense' not in t['class']:
+                                continue
+                            trans_list.append(
+                                _find_tag_txt('type-translation', self._find_class_all('type-translation', bs_obj=t)))
+                        except:
+                            pass
+                    else:
+                        if not trans_list:
+                            for tt in senceTag.recursiveChildGenerator():
+                                if not isinstance(tt, bs4.Tag):
+                                    continue
+                                if 'type-translation' in tt.get('class') \
+                                        and 'type-example' not in tt.parent.get('class'):
+                                    trans_list.append(tt.text.strip())
+
+                    trans = ', '.join(trans_list)
+                except Exception as exc:
+                    trans = ''
             try:
                 subject = _find_tag_txt('type-subj')
+            except:
+                pass
+            try:
+                syn = _find_tag_txt('type-syn')
+                syn = re.match("\((.+)\)", syn).group(1).strip()
             except:
                 pass
 
@@ -328,7 +362,8 @@ class _SpanishEnglishDef(_Parser):
                 pass
 
             if not trans:
-                trans = syn
+                if syn:
+                    trans = syn
 
             # remove [....]
             m = re.match("(\[.+\])\s+(.+)", trans)
@@ -342,30 +377,32 @@ class _SpanishEnglishDef(_Parser):
 
             # endregion
 
-            tag_misc = self.fo('lbl type-misc', bs_obj=senceTag)
-            if tag_misc:
-                misc = tag_misc.text
-            else:
-                misc = ''
-
             examples = []
             for emp_tag in self._find_class_all('type-example', bs_obj=senceTag):
                 spanish_sentence = self.fo('quote', bs_obj=emp_tag)
                 trans_sentence_tag = self.fo('cit type-translation',
                                              bs_obj=emp_tag).find('span', attrs={'class': 'quote'})
+
+                tag_misc = self.fo('lbl type-misc', bs_obj=senceTag)
+                if tag_misc:
+                    misc = re.match("\((.+)\)", tag_misc.text).group(1)
+                else:
+                    misc = ''
+
                 examples.append(
                     {
                         'sentence': unicodedata.normalize("NFKD", spanish_sentence.text),
+                        'misc': unicodedata.normalize("NFKD", misc),
                         'trans': trans_sentence_tag.text
                     }
                 )
-
+            trans = ", ".join(list(set([t.strip() for t in trans.split(",") if t.strip()])))
+            # if trans:
             _.append(
                 {
                     'colloc': colloc,
                     'geo': geo,
                     'register': register,
-                    'misc': misc,
                     'syn': syn,
                     'subj': subject,
                     'trans': unicodedata.normalize("NFKD", trans.split("\n")[0].strip()),
@@ -389,7 +426,7 @@ class SpanishEnglish(_Parser):
         self.get()
 
     @property
-    @_decArchive('audio', pk='url')
+    @_decArchive('url', pk='audio')
     def WordSoundUrl(self):
         try:
             return self.fo("hwd_sound sound audio_play_button icon-volume-up ptr")['data-src-mp3']
@@ -433,7 +470,8 @@ class SpanishEnglish(_Parser):
             "word": self._word,
             'audio': {'url': self.WordSoundUrl,
                       'name': self.PropAudioFileName,
-                      # 'content': self.PropAudioFileContent
+                      'content': base64.encodebytes(
+                          self.PropAudioFileContent).decode() if self.PropAudioFileContent else ''
                       },
             'defs': self.defs,
         }
@@ -454,6 +492,35 @@ class SpanishEnglish(_Parser):
         """
         return _SpanishEnglishDef('', None, **self.to_dict['defs'][item])
 
+    @property
+    def joined_english_explains(self):
+        return "; ".join([
+            re.sub(
+                '(,\s){2,}',
+                '',
+                f"{d['pos']+': ' if d['pos'] and all(d['explains']) else d['pos']}{', '.join(d['explains'])}"
+            ).strip(', ').replace(": , ", ": ") for i, d in enumerate(self.english_explains)
+        ]
+        )
+
+    @property
+    def english_explains(self):
+        _ = [dict(
+            explains=[
+                re.sub("\s+", " ",
+                       re.sub(
+                           '\(\s?\)',
+                           "",
+                           f"{e['colloc']} ({e['geo']})({e['register']}) {e['trans']}"
+                       )).strip() for e in
+                d['explains']],
+            pos=d['pos'],
+            syns=[e['syn'] for e in
+                  d['explains']]
+        ) for d in self.defs]
+
+        return _
+
     def get_langs_trans(self, lang):
         """
 
@@ -469,17 +536,23 @@ class SpanishEnglish(_Parser):
 
         else:
             _ = [lang, ]
-        return ", ".join(list(
+        r_data = ", ".join(list(
             set(reduce(add, [self.PropTranslations.get(lg.name.replace("_", " "), []) for lg in _]))
         ))
 
+        if 'english' in ';'.join([l.name.lower() for l in _]) and not r_data:
+            r_data = self.joined_english_explains
+        return r_data
+
 
 if __name__ == '__main__':
-    for w in ['llamarse', 'dia', 'ahora', 'proyecto']:
+    for w in ['alumno',  ]:
         p = SpanishEnglish(w)
         pprint(
-            (w,
-             p.get_langs_trans('.+English'),
-             p.get_langs_trans(lang=TransLang.Chinese)
-             )
+            p.defs
+            # {
+            #     'word': w,
+            #     'zh': p.get_langs_trans(TransLang.Chinese),
+            #     'es-en': p.joined_english_explains
+            # }
         )
