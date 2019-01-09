@@ -197,7 +197,7 @@ class _Parser:
         if not self._bs:
             print(f"Requesting {self}: {self.RqstUrl}")
             self._bs = bs4.BeautifulSoup(
-                requests.get(self.RqstUrl, headers=_Parser.headers).text,
+                requests.get(self.RqstUrl, headers=_Parser.headers, verify=False).text,
                 features='lxml').body
         return self._bs
 
@@ -220,7 +220,7 @@ class _Parser:
         :type dest_file: Path
         :return:
         '''
-        dest_file.write_bytes(requests.get(url, stream=True).content)
+        dest_file.write_bytes(requests.get(url, stream=True, verify=False).content)
 
     @property
     @_decArchive('entry_title')
@@ -421,9 +421,18 @@ class _SpanishEnglishDef(_Parser):
 
 class SpanishEnglish(_Parser):
     def __init__(self, word, ):
+        self._suggest_url = f'https://www.collinsdictionary.com/search/?dictCode=spanish-english&q={word}'
+        self._request_url = ''
         super(SpanishEnglish, self).__init__(WebDictSeg.SpanishEnglish, word, download_audio=True)
         self.get = lambda: self.to_dict
         self.get()
+
+    @property
+    def RqstUrl(self):
+        if not self._request_url:
+            rsp = requests.get(self._suggest_url, verify=False)
+            self._request_url = rsp.url
+        return self._request_url
 
     @property
     @_decArchive('url', pk='audio')
@@ -498,7 +507,7 @@ class SpanishEnglish(_Parser):
             re.sub(
                 '(,\s){2,}',
                 '',
-                f"{d['pos']+': ' if d['pos'] and all(d['explains']) else d['pos']}{', '.join(d['explains'])}"
+                f"{d['pos'] + ': ' if d['pos'] and all(d['explains']) else d['pos']}{', '.join(d['explains'])}"
             ).strip(', ').replace(": , ", ": ") for i, d in enumerate(self.english_explains)
         ]
         )
@@ -546,7 +555,7 @@ class SpanishEnglish(_Parser):
 
 
 if __name__ == '__main__':
-    for w in ['alumno',  ]:
+    for w in ['todo', ]:
         p = SpanishEnglish(w)
         pprint(
             p.defs
