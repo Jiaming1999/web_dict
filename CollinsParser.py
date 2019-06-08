@@ -197,7 +197,7 @@ class _Parser:
         if not self._bs:
             print(f"Requesting {self}: {self.RqstUrl}")
             self._bs = bs4.BeautifulSoup(
-                requests.get(self.RqstUrl, headers=_Parser.headers, verify=False).text,
+                requests.get(self.RqstUrl, headers=_Parser.headers, verify=True).text,
                 features='lxml').body
         return self._bs
 
@@ -220,7 +220,7 @@ class _Parser:
         :type dest_file: Path
         :return:
         '''
-        dest_file.write_bytes(requests.get(url, stream=True, verify=False).content)
+        dest_file.write_bytes(requests.get(url, stream=True, verify=True).content)
 
     @property
     @_decArchive('entry_title')
@@ -420,17 +420,18 @@ class _SpanishEnglishDef(_Parser):
 
 
 class SpanishEnglish(_Parser):
-    def __init__(self, word, ):
+    def __init__(self, word: str, use_archive: bool = True, download_audio: bool = True):
         self._suggest_url = f'https://www.collinsdictionary.com/search/?dictCode=spanish-english&q={word}'
         self._request_url = ''
-        super(SpanishEnglish, self).__init__(WebDictSeg.SpanishEnglish, word, download_audio=True)
+        super(SpanishEnglish, self).__init__(WebDictSeg.SpanishEnglish, word, download_audio=download_audio,
+                                             use_archive=use_archive)
         self.get = lambda: self.to_dict
         self.get()
 
     @property
     def RqstUrl(self):
         if not self._request_url:
-            rsp = requests.get(self._suggest_url, verify=False)
+            rsp = requests.get(self._suggest_url, verify=True)
             self._request_url = rsp.url
         return self._request_url
 
@@ -463,27 +464,6 @@ class SpanishEnglish(_Parser):
     @_decExtract('data-band', convert_to_type=int)
     def PropFrequencyScore(self):
         return self.fo('word-frequency-img', 'span')
-
-    @property
-    def to_dict(self):
-        return {
-            'frequency': {
-                'title': self.PropFrequencyTitle,
-                'rank': self.FrequencyRank,
-                'score': self.PropFrequencyScore
-            },
-
-            'translations': self.PropTranslations,
-            'entry_title': self.PropEntryTitle,
-            'orth': self.PropOrth,
-            "word": self._word,
-            'audio': {'url': self.WordSoundUrl,
-                      'name': self.PropAudioFileName,
-                      'content': base64.encodebytes(
-                          self.PropAudioFileContent).decode() if self.PropAudioFileContent else ''
-                      },
-            'defs': self.defs,
-        }
 
     @property
     @_decArchive('rank', 'frequency')
@@ -553,15 +533,34 @@ class SpanishEnglish(_Parser):
             r_data = self.joined_english_explains
         return r_data
 
+    @property
+    def to_dict(self):
+        return {
+            'frequency': {
+                'title': self.PropFrequencyTitle,
+                'rank': self.FrequencyRank,
+                'score': self.PropFrequencyScore
+            },
+
+            'translations': self.PropTranslations,
+            'entry_title': self.PropEntryTitle,
+            'orth': self.PropOrth,
+            "word": self._word,
+            'defs': self.defs,
+        }
+
+    @property
+    def audio_info(self):
+        return {'url': self.WordSoundUrl,
+                'name': self.PropAudioFileName,
+                # 'content': base64.encodebytes(
+                #     self.PropAudioFileContent).decode() if self.PropAudioFileContent else ''
+                }
+
 
 if __name__ == '__main__':
-    for w in ['todo', ]:
-        p = SpanishEnglish(w)
+    for w in ['hagan', ]:
+        p = SpanishEnglish(w, use_archive=True, download_audio=False)
         pprint(
-            p.defs
-            # {
-            #     'word': w,
-            #     'zh': p.get_langs_trans(TransLang.Chinese),
-            #     'es-en': p.joined_english_explains
-            # }
+            p.to_dict['defs'][1]
         )
