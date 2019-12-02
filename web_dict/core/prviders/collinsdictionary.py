@@ -1,7 +1,5 @@
 import re
 
-from property_cached import cached_property
-
 from .base_provider import BaseProvider
 from ..parser import Parser
 
@@ -191,7 +189,7 @@ class CollinsWeb(BaseProvider):
     def __init__(self, word: str, seg: str = 'spanish-english'):
         super(CollinsWeb, self).__init__(word, seg)
 
-    @cached_property
+    @property
     def bs(self):
         bs = super(BaseProvider, self).bs
         return (

@@ -5,7 +5,6 @@ from typing import Union, Tuple
 
 import requests
 from bs4 import BeautifulSoup, Tag
-from property_cached import cached_property
 from requests import Response, HTTPError
 
 from .utils import STD_HEADERS
@@ -20,17 +19,20 @@ class Parser:
 
     def __init__(self, markup: Union[BeautifulSoup, str, Tag]):
         self._markup = markup
+        self._bs = None
 
     @property
     def markup(self) -> Union[BeautifulSoup, str, Tag]:
         return self._markup
 
-    @cached_property
+    @property
     def bs(self) -> Union[BeautifulSoup, Tag]:
-        if isinstance(self.markup, (BeautifulSoup, Tag)):
-            return self.markup
-        else:
-            return BeautifulSoup(markup=self.markup, features='lxml')
+        if not self._bs:
+            if isinstance(self.markup, (BeautifulSoup, Tag)):
+                self._bs = self.markup
+            else:
+                self._bs = BeautifulSoup(markup=self.markup, features='html.parser')
+        return self._bs
 
     def select(self, p: str, one=True, text=True):
         if one:
@@ -93,17 +95,19 @@ class WebParser(Parser):
     def __init__(self, word: str):
         self.word = word
         super(WebParser, self).__init__(markup='')
+        self._rsp = None
 
     @property
     @abc.abstractmethod
     def url(self):
         ...
 
-    @cached_property
+    @property
     def rsp(self) -> Response:
-        rsp = requests.get(self.url, headers=STD_HEADERS)
-        rsp.raise_for_status()
-        return rsp
+        if not self._rsp:
+            self._rsp = requests.get(self.url, headers=STD_HEADERS)
+            self._rsp.raise_for_status()
+        return self._rsp
 
     @property
     def json(self) -> dict:
