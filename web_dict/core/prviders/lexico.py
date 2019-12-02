@@ -1,5 +1,7 @@
 import re
 
+from bs4 import Tag
+
 from .base_provider import BaseProvider
 from ..parser import Parser
 
@@ -41,9 +43,7 @@ class _ExpEntryProvider(Parser):
     def val_examples(self):
         _ = self.provider_to_list(_ExampleProvider, 'div.examples > div.exg > ul > li.ex')
         _.insert(0, _ExampleProvider(self.select(".ex", one=True, text=False)).to_dict())
-        if not _:
-            return _
-        return [_ExampleProvider(self.select(".exg > .ex", one=True, text=False)).to_dict(), ]
+        return _
 
 
 class _GrambProvider(Parser):
@@ -65,6 +65,15 @@ class _PrimaryHeaderProvider(Parser):
 
     def val_trans(self):
         return self.select('span.head-translation')
+
+
+class _PhraseProvider(Parser):  # class_=senseInnerWrapper
+
+    def val_phrases(self):
+        return self.select("strong.phrase", one=False)
+
+    def val_exps(self):
+        return self.provider_to_list(_ExpEntryProvider, 'ul.semb > li')
 
 
 class Lexico(BaseProvider):
@@ -92,3 +101,10 @@ class Lexico(BaseProvider):
     @property
     def val_defs(self):
         return self.provider_to_list(_GrambProvider, 'section.gramb')
+
+    @property
+    def val_phrases(self):
+        phrase_title_tag: Tag = self.bs.find("h3", class_='phrases-title')
+        if not phrase_title_tag:
+            return []
+        return self.provider_to_list(_PhraseProvider, "section.etymology.etym > div.senseInnerWrapper")

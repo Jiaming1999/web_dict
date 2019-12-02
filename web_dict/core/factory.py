@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Type
 
-from web_dict.core.exception import NoTranslationSegmentError
+from .exception import NoTranslationSegmentError
 from .prviders.base_provider import BaseProvider
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico

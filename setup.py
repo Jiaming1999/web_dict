@@ -8,7 +8,7 @@ setup(
     packages=find_packages(),  # Chose the same as "name"
     long_description=Path("readme.md").read_text(),
     long_description_content_type='text/markdown',
-    version='0.1.1',  # Start with a small number and increase it with every change you make
+    version='0.1.3',  # Start with a small number and increase it with every change you make
     license='agpl-3.0',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description='TYPE YOUR DESCRIPTION HERE',  # Give a short description about your library
     author='Kyle, Hwang',  # Type in your name

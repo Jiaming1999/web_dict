@@ -6,14 +6,14 @@ from web_dict import CollinsDictionary, OxfordDictionary
 
 class CollinsTest(unittest.TestCase):
 
-    def test_collins(self):
+    def rtest_collins(self):
         with CollinsDictionary(word='hacer') as c:
             self._p(c.es2en())
 
-    def rtest_oxford(self):
+    def test_oxford(self):
         c = OxfordDictionary()
         self._p(
-            c.es2en('hacer')
+            c.en('tomorrow')
         )
 
     def _p(self, c):
