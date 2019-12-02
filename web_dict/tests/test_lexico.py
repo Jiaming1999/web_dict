@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from core.prviders.lexico import Lexico
+from web_dict.core.prviders.lexico import Lexico
 
 
 class CollinsTest(unittest.TestCase):

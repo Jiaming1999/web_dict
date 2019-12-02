@@ -61,14 +61,24 @@ class _ExampleProvider(Parser):
 
     @property
     def sent(self):
-        return re.sub(r'\s+', ' ', self.select('span.quote', one=False)[0]).strip()
+        try:
+            return re.sub(r'\s+', ' ', self.contents[0]).strip()
+        except IndexError:
+            return None
 
     @property
     def trans(self):
         try:
-            return re.sub(r'\s+', ' ', "; ".join(self.select('span.quote', one=False)[1:])).strip()
+            return re.sub(r'\s+', ' ', "; ".join(self.contents[1:])).strip()
         except IndexError:
             return None
+
+    @property
+    def contents(self):
+        _ = self.select('span.quote', one=False)
+        if len(_) == 2:
+            return _
+        return [t.text.replace("⇒", "").strip() for t in self.bs.find_all('q')]
 
 
 class _SenseProvider(Parser):
@@ -103,7 +113,7 @@ class _SenseProvider(Parser):
     @property
     def exp(self):
         exp = "; ".join(t.text for t in
-                        self.bs.find_all('span', class_='cit type-translation', recursive=False, ))
+                        self.bs.find_all('span', class_=re.compile(r'cit\s(cit-)?type-translation'), recursive=False, ))
 
         if not exp:
             exp = self.select("div.def")
@@ -117,7 +127,8 @@ class _SenseProvider(Parser):
 
     @property
     def examples(self):
-        return self.provider_to_list(_ExampleProvider, "div.cit.type-example")
+        return self.provider_to_list(_ExampleProvider, "div.cit.type-example") \
+               or self.provider_to_list(_ExampleProvider, "div.cit.cit-type-example")
 
     @property
     def phrases(self):
@@ -152,12 +163,17 @@ class _DefProvider(Parser):
 
     @property
     def senses(self):
-        return [s for s in self.provider_to_list(_SenseProvider,
-                                                 ('div', dict(class_='sense', recursive=False)))
-                if any(s.values())]
+        senses = [s for s in self.provider_to_list(_SenseProvider,
+                                                   ('div', dict(class_='sense', recursive=False)))
+                  if any(s.values())]
+        if not senses:
+            senses = [s for s in self.provider_to_list(_SenseProvider,
+                                                       ('li', dict(class_='sense_list_item', recursive=True)))
+                      if any(s.values())]
+        return senses
 
 
-class CollinsDictionary(BaseProvider):
+class CollinsWeb(BaseProvider):
     to_dict_fields = (
         'head_word',
         'pron',
@@ -168,20 +184,29 @@ class CollinsDictionary(BaseProvider):
 
     @property
     def url(self):
-        return f"https://www.collinsdictionary.com/dictionary/{self.seg}/{self.word}"
+        url = f"https://www.collinsdictionary.com/dictionary/{self.seg}/{self.word}"
+        print(f"Requesting {url}")
+        return url
 
     def __init__(self, word: str, seg: str = 'spanish-english'):
-        super(CollinsDictionary, self).__init__(word)
-        self.seg = seg
+        super(CollinsWeb, self).__init__(word, seg)
 
     @cached_property
     def bs(self):
         bs = super(BaseProvider, self).bs
-        return bs.find('div', class_=re.compile(r'cB\scB-def.+'))
+        return (
+                bs.find('div', class_=re.compile(r'cB\scB-def.+'))
+                or
+                bs.find('div', class_=re.compile(r'cB\scB-t'))
+        )
 
     @property
     def pron(self):
-        return self.select('span.pron.type-')
+        try:
+            return self.select('span.pron.type-') or re.match(r"\((?P<pron>.+)\)",
+                                                              self.select("div.cB-h > div > span.pron")).group("pron")
+        except TypeError:
+            return None
 
     @property
     def rank(self):
@@ -193,15 +218,14 @@ class CollinsDictionary(BaseProvider):
     @property
     def head_word(self):
         try:
-            return self.select("span.orth")
+            return self.select('h2.h2_entry > span.orth') or self.select('h2.h2_entry')
         except AttributeError:
             return None
 
     @property
     def audio(self):
-        return self.select("a.audio_play_button", text=False)['data-src-mp3']
+        return self.select("a.audio_play_button", text=False).get('data-src-mp3')
 
     @property
     def defs(self):
-        return [s for s in self.provider_to_list(_DefProvider, "div.hom")
-                if any(s.values())]
+        return [s for s in self.provider_to_list(_DefProvider, "div.hom") if any(s.values())]

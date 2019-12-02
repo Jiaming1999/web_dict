@@ -1,21 +1,21 @@
 import json
 import unittest
 
-from core.prviders.collinsdictionary import CollinsDictionary
+from web_dict.core.prviders.collinsdictionary import CollinsWeb
 
 
 class CollinsTest(unittest.TestCase):
 
     def test_spanish_1(self):
-        c = CollinsDictionary('hacer')
+        c = CollinsWeb('hacer')
         #self._p(c)
 
     def test_spanish_2(self):
-        c = CollinsDictionary('cómo')
+        c = CollinsWeb('cómo')
         self._p(c)
 
     def test_english_1(self):
-        c = CollinsDictionary('INTRANSITIVE', 'english')
+        c = CollinsWeb('INTRANSITIVE', 'english')
         #self._p(c)
 
     def _p(self, c):

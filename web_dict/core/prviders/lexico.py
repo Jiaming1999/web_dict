@@ -78,7 +78,7 @@ class Lexico(BaseProvider):
         return f"https://www.lexico.com/{self.seg}/{_}/{self.word}"
 
     def __init__(self, word: str, seg='es-en'):
-        super(Lexico, self).__init__(word)
+        super(Lexico, self).__init__(word, seg)
         self.seg = seg
 
     @property

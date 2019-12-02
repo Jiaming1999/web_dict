@@ -6,7 +6,7 @@ from typing import Union, Tuple
 import requests
 from bs4 import BeautifulSoup, Tag
 from property_cached import cached_property
-from requests import Response
+from requests import Response, HTTPError
 
 from .utils import STD_HEADERS
 
@@ -61,6 +61,10 @@ class Parser:
                     val = val()
                 if isinstance(val, str):
                     val = unicodedata.normalize("NFKD", val)
+                    # remove brackets
+                    m = re.match(r"\((?P<c>.+)\)", val)
+                    if m:
+                        val = m.group("c")
                 if val not in [None, '']:
                     _[field.split('val_')[-1]] = val
             except AttributeError:
@@ -108,5 +112,8 @@ class WebParser(Parser):
     @property
     def markup(self) -> str:
         if not self._markup:
-            self._markup = self.rsp.content.decode()
+            try:
+                self._markup = self.rsp.content.decode()
+            except HTTPError:
+                self._markup = ''
         return self._markup
