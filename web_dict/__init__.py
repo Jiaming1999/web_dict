@@ -1,5 +1,6 @@
-from .core.factory import CollinsDictionary
+from .core.factory import CollinsDictionary, OxfordDictionary
 from .core.prviders.collinsdictionary import CollinsWeb
 from .core.prviders.lexico import Lexico
 
-__all__ = (CollinsDictionary, Lexico, CollinsWeb)
+LexicoDictionary = OxfordDictionary
+__all__ = (CollinsDictionary, LexicoDictionary, OxfordDictionary, Lexico, CollinsWeb)

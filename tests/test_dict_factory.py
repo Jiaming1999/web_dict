@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from web_dict.core.factory import CollinsDictionary, OxfordDictionary
+from web_dict import CollinsDictionary, OxfordDictionary
 
 
 class CollinsTest(unittest.TestCase):

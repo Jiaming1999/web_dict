@@ -5,6 +5,7 @@
 pip install web-dict
 ```
 # Language Supporting
+## Collinsdictionary.com
 - class `CollinsDictionary` supports below languages, respectively call method `.en2es` or `.es2en` etc. 
 
 ```json
@@ -21,8 +22,14 @@ from web_dict import CollinsDictionary
 dict_ = CollinsDictionary()
 defs = dict_.es2en(word='hacer')
 ```
-   
-+ Lexico.com
+
+```python
+from web_dict import OxfordDictionary
+dict_ = OxfordDictionary()
+defs = dict_.es(word='hacer')
+```
+
+## Lexico.com
     - en-es
     - es-en
     - en
