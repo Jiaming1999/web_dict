@@ -75,13 +75,15 @@ class Parser:
         return _
 
     def provider_to_list(self, provider_cls, block_selector: Union[
-        str, Tuple[str, dict]
-    ]):
+        str, Tuple[str, dict],
+    ], find_in_tag: Union[BeautifulSoup, Tag] = None, ):
+        if not find_in_tag:
+            find_in_tag = self.bs
         try:
             if isinstance(block_selector, str):
                 blocks = self.select(block_selector, one=False, text=False)
             else:
-                blocks = self.bs.find_all(
+                blocks = find_in_tag.find_all(
                     block_selector[0],
                     **block_selector[1]
                 )

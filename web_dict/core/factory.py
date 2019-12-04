@@ -3,6 +3,7 @@ from typing import Type
 
 from .exception import NoTranslationSegmentError
 from .prviders.base_provider import BaseProvider
+from .prviders.bing import CNBing
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
 from .prviders.spanishdict import SpanishDict
@@ -166,3 +167,8 @@ class SpanishDictDictionary(OrphanDictionaryFactory):
 
     def __init__(self, *, word: str = ''):
         super(SpanishDictDictionary, self).__init__(SpanishDict, word=word)
+
+
+class CNBingDictionary(OrphanDictionaryFactory):
+    def __init__(self, *, word: str = ''):
+        super(CNBingDictionary, self).__init__(CNBing, word=word)
