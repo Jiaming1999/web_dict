@@ -11,10 +11,10 @@ except FileNotFoundError:
 setup(
     name='web_dict',  # How you named your package folder (MyLib)
     packages=find_packages(),  # Chose the same as "name"
-    description='parser class for collinsdictionary.com and lexico.com',
+    description='parser class for vaiouse online-dict, e.g. collinsdictionary/lexico/vocabulary/spanishdict etc.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='0.1.4',  # Start with a small number and increase it with every change you make
+    version='0.1.5',  # Start with a small number and increase it with every change you make
     license='agpl-3.0',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     author='Kyle, Hwang',  # Type in your name
     author_email='upday7@163.com',  # Type in your E-Mail

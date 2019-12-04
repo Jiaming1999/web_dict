@@ -5,6 +5,7 @@ from .exception import NoTranslationSegmentError
 from .prviders.base_provider import BaseProvider
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
+from .prviders.spanishdict import SpanishDict
 from .prviders.vocaublary import Vocabulary
 
 
@@ -50,6 +51,23 @@ class DictionaryFactory:
         self._in_lang = in_lang
         self._target_lang = target_lang
         return self.provider.to_dict()
+
+
+class OrphanDictionaryFactory(DictionaryFactory):
+    @property
+    def segment(self) -> str:
+        return ''
+
+    @property
+    def lang_codes(self) -> dict:
+        return {}
+
+    def __init__(self, provider_cls, *, word: str = ''):
+        self._provider_cls = provider_cls
+        super(OrphanDictionaryFactory, self).__init__(self._provider_cls, word=word)
+
+    def do_search(self, word: str = ""):
+        return super(OrphanDictionaryFactory, self).search(word, '', '')
 
 
 class CollinsDictionary(DictionaryFactory):
@@ -138,18 +156,13 @@ class OxfordDictionary(DictionaryFactory):
         return self.search(word, 'es', 'es')
 
 
-class VocabularyDictionary(DictionaryFactory):
-    @property
-    def segment(self) -> str:
-        return ''
-
-    @property
-    def lang_codes(self) -> dict:
-        return {}
+class VocabularyDictionary(OrphanDictionaryFactory):
 
     def __init__(self, *, word: str = ''):
-        self._provider_cls = Vocabulary
-        super(VocabularyDictionary, self).__init__(self._provider_cls, word=word)
+        super(VocabularyDictionary, self).__init__(Vocabulary, word=word)
 
-    def en(self, word: str = ""):
-        return self.search(word, '', '')
+
+class SpanishDictDictionary(OrphanDictionaryFactory):
+
+    def __init__(self, *, word: str = ''):
+        super(SpanishDictDictionary, self).__init__(SpanishDict, word=word)

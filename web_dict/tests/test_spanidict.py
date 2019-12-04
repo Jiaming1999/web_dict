@@ -1,13 +1,13 @@
 import json
 import unittest
 
-from web_dict.core.factory import VocabularyDictionary
+from web_dict.core.factory import SpanishDictDictionary
 
 
 class VocabularyTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.c = VocabularyDictionary(word='python')
+        self.c = SpanishDictDictionary(word='hacer')
 
     def test_basic(self):
         self.assertIsNotNone(self.c.do_search(), )
