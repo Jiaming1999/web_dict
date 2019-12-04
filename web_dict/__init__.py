@@ -20,8 +20,8 @@
 #  terms and conditions of the GNU Affero General Public License which
 #  accompanied this program.
 
-from .core.factory import CollinsDictionary, OxfordDictionary, VocabularyDictionary
+from .core.factory import CollinsDictionary, OxfordDictionary, VocabularyDictionary, CNBingDictionary
 
 LexicoDictionary = OxfordDictionary
 
-__all__ = (CollinsDictionary, LexicoDictionary, OxfordDictionary, VocabularyDictionary)
+__all__ = (CollinsDictionary, LexicoDictionary, OxfordDictionary, VocabularyDictionary, CNBingDictionary)
