@@ -4,7 +4,51 @@
 ```bash
 pip install web-dict
 ```
-# Language Supporting
+# Supports
+## Vocabulary.com
+- class `VocabularyDictionary` supports English only
+```python
+from web_dict import VocabularyDictionary
+dict_ = VocabularyDictionary()
+defs = dict_.en(word='python')
+```
+returns:
+```json
+{
+    "audio": "https://audio.vocab.com/1.0/us/P/6XU2813JWEQB.mp3",
+    "long_def": "A python will grab smaller animals with its sharp teeth and then use its powerful coils to constrict the prey until it stops breathing. Pythons can also eat animals larger than they are — occasionally, pythons have been known to eat antelope and deer. The word python comes from Greek mythology, in which Python was a dragon or serpent who guarded the Delphic oracle until he was eventually killed by Apollo.",
+    "head_word": "python",
+    "short_def": "A python is a very large, nonvenomous snake. Instead of injecting poison through their fangs, pythons kill by wrapping around and asphyxiating their prey. You certainly wouldn't want to be a python's main squeeze.",
+    "defs": {
+        "primary": [
+            {
+                "exp": "large Old World boas",
+                "pos": [
+                    "n"
+                ]
+            },
+            {
+                "exp": "a soothsaying spirit or a person who is possessed by such a spirit",
+                "pos": [
+                    "n"
+                ]
+            }
+        ],
+        "full": [
+            {
+                "examples": [],
+                "exp": "large Old World boas",
+                "pos": "n"
+            },
+            {
+                "examples": [],
+                "exp": "a soothsaying spirit or a person who is possessed by such a spirit",
+                "pos": "n"
+            }
+        ]
+    }
+}
+```
 ## Collinsdictionary.com
 - class `CollinsDictionary` supports below languages, respectively call method `.en2es` or `.es2en` etc. 
 

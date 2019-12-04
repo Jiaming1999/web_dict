@@ -5,6 +5,7 @@ from .exception import NoTranslationSegmentError
 from .prviders.base_provider import BaseProvider
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
+from .prviders.vocaublary import Vocabulary
 
 
 class DictionaryFactory:
@@ -135,3 +136,20 @@ class OxfordDictionary(DictionaryFactory):
 
     def es(self, word: str = ''):
         return self.search(word, 'es', 'es')
+
+
+class VocabularyDictionary(DictionaryFactory):
+    @property
+    def segment(self) -> str:
+        return ''
+
+    @property
+    def lang_codes(self) -> dict:
+        return {}
+
+    def __init__(self, *, word: str = ''):
+        self._provider_cls = Vocabulary
+        super(VocabularyDictionary, self).__init__(self._provider_cls, word=word)
+
+    def en(self, word: str = ""):
+        return self.search(word, '', '')
