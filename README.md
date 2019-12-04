@@ -164,7 +164,7 @@ returns
 ```
 
 ## SpanishDict.com
-- class `SpanishDictDictionary` supports English only
+- class `SpanishDictDictionary` supports Spanish only
 - use `.do_search` method as which supports mono-language
 
 ## Lexico.com
