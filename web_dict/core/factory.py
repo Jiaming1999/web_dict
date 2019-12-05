@@ -30,6 +30,7 @@ from .prviders.cn_bing_s import CNBingSuggestion
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
 from .prviders.spanishdict import SpanishDict
+from .prviders.vocabulary_s import VocabularySuggestion
 from .prviders.vocaublary import Vocabulary
 
 
@@ -184,6 +185,12 @@ class VocabularyDictionary(OrphanDictionaryFactory):
 
     def __init__(self, *, word: str = ''):
         super(VocabularyDictionary, self).__init__(Vocabulary, word=word)
+
+
+class VocabularySuggestionDictionary(OrphanDictionaryFactory):
+
+    def __init__(self, *, word: str = ''):
+        super(VocabularySuggestionDictionary, self).__init__(VocabularySuggestion, word=word)
 
 
 class SpanishDictDictionary(OrphanDictionaryFactory):

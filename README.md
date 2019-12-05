@@ -172,10 +172,89 @@ returns:
     }
 }
 ```
+- class `VocabularySuggestionDictionary`
+```json
+{
+    "suggestion": [
+        {
+            "phrase": "python",
+            "freq": 18497.57,
+            "exp": "large Old World boas"
+        },
+        {
+            "phrase": "Python",
+            "freq": 25364.33,
+            "exp": "Greek mythology"
+        },
+        {
+            "phrase": "pythoness",
+            "freq": 262652.35,
+            "exp": "a witch with powers of divination"
+        },
+        {
+            "phrase": "Pythoness",
+            "freq": 90918.78,
+            "exp": "Greek mythology"
+        },
+        {
+            "phrase": "Pythonidae",
+            "freq": -1,
+            "exp": "in some classifications a family separate from Boidae comprising Old World boas"
+        },
+        {
+            "phrase": "Pythoninae",
+            "freq": -1,
+            "exp": "Old World boas: pythons"
+        },
+        {
+            "phrase": "Python molurus",
+            "freq": 5909656.39,
+            "exp": "very large python of southeast Asia"
+        },
+        {
+            "phrase": "Python reticulatus",
+            "freq": 1477414.85,
+            "exp": "of southeast Asia and East Indies"
+        },
+        {
+            "phrase": "Python sebae",
+            "freq": -1,
+            "exp": "very large python of tropical and southern Africa"
+        },
+        {
+            "phrase": "Python variegatus",
+            "freq": -1,
+            "exp": "Australian python with a variegated pattern on its back"
+        }
+    ]
+}
+```
 ## cn.Bing.com
 - class `CNBingDictionary` supports `English > Simplified Chinese` only
 - class `CNBingSuggestion` 
+```json
+{
+    "suggestion": [
+        {
+            "exp": "蟒; 蚺蛇",
+            "phrase": "python"
+        },
+        {
+            "exp": "女巫; 希腊达尔菲地方祀奉阿波罗神的...",
+            "phrase": "pythoness"
+        },
+        {
+            "exp": "女巫; 希腊达尔菲地方祀奉阿波罗神...",
+            "phrase": "pythonesses"
+        },
+        {
+            "exp": "神托的; 蚒蛇的",
+            "phrase": "pythonic"
+        }
+    ]
+}
 
+```
 ## SpanishDict.com
 - class `SpanishDictDictionary` supports `Spanish > English` only
 

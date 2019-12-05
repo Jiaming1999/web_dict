@@ -23,13 +23,14 @@
 import json
 import unittest
 
-from web_dict.core.factory import VocabularyDictionary
+from web_dict.core.factory import VocabularySuggestionDictionary
 
 
 class VocabularyTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.c = VocabularyDictionary(word='python')
+        # self.c = VocabularyDictionary(word='python')
+        self.c = VocabularySuggestionDictionary(word='python')
 
     def test_basic(self):
         self.assertIsNotNone(self.c.do_search(), )

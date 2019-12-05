@@ -20,27 +20,40 @@
 #  terms and conditions of the GNU Affero General Public License which
 #  accompanied this program.
 
-import json
-import unittest
 
-from web_dict.core.factory import CNBingDictionary, CNBingSuggestionDictionary
-
-
-class VocabularyTest(unittest.TestCase):
-
-    def setUp(self) -> None:
-        self.c = CNBingDictionary(word='python')
-        self.c2 = CNBingSuggestionDictionary(word='python')
-
-    def test_basic(self):
-        # self.assertIsNotNone(self.c.do_search(), )
-        self.assertIsNotNone(self.c2.do_search(), )
-        # self._p(self.c.do_search())
-        self._p(self.c2.do_search())
-
-    def _p(self, c):
-        print(json.dumps(c, indent=4, ensure_ascii=False))
+from .base_provider import BaseProvider
+from ..parser import Parser
 
 
-if __name__ == '__main__':
-    unittest.main()
+class _SuggestionProvider(Parser):
+
+    def val_phrase(self):
+        return self.select('span.word')
+
+    def val_exp(self):
+        return self.select('span.definition')
+
+    def val_freq(self):
+        try:
+            return float(self.bs.attrs.get('freq', 0))
+        except ValueError:
+            return -1
+
+
+class VocabularySuggestion(BaseProvider):
+
+    @property
+    def url(self):
+        return f"https://www.vocabulary.com/dictionary/autocomplete?search={self.word}"
+
+    def __init__(self, word: str, seg=''):
+        super(VocabularySuggestion, self).__init__(word, seg)
+        self.seg = seg
+
+    @property
+    def head_word(self):
+        return None
+
+    @property
+    def val_suggestion(self):
+        return self.provider_to_list(_SuggestionProvider, 'li')
