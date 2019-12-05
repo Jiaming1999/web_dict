@@ -20,27 +20,38 @@
 #  terms and conditions of the GNU Affero General Public License which
 #  accompanied this program.
 
-import json
-import unittest
 
-from web_dict.core.factory import CNBingDictionary, CNBingSuggestionDictionary
+from urllib.parse import parse_qs
 
-
-class VocabularyTest(unittest.TestCase):
-
-    def setUp(self) -> None:
-        self.c = CNBingDictionary(word='think')
-        self.c2 = CNBingSuggestionDictionary(word='NGO')
-
-    def test_basic(self):
-        # self.assertIsNotNone(self.c.do_search(), )
-        self.assertIsNotNone(self.c2.do_search(), )
-        # self._p(self.c.do_search())
-        self._p(self.c2.do_search())
-
-    def _p(self, c):
-        print(json.dumps(c, indent=4, ensure_ascii=False))
+from .base_provider import BaseProvider
+from ..parser import Parser
 
 
-if __name__ == '__main__':
-    unittest.main()
+class _SuggestionProvider(Parser):
+
+    def val_phrase(self):
+        return parse_qs(self.bs['url'].split("?")[-1])['q'][0].replace("+", " ")
+
+    def val_exp(self):
+        return self.bs['query'].replace(self.val_phrase(), "").strip()
+
+
+class CNBingSuggestion(BaseProvider):
+
+    @property
+    def url(self):
+        return f"https://cn.bing.com/AS/Suggestions?scope=dictionary&pt=page.bingdict" \
+               f"&bq=dict&mkt=zh-cn&ds=bingdict&qry={self.word}" \
+               f"&cp=6&cvid=DCBD6682795F4F4CBE6CA0809F43ED3C"
+
+    def __init__(self, word: str, seg=''):
+        super(CNBingSuggestion, self).__init__(word, seg)
+        self.seg = seg
+
+    @property
+    def head_word(self):
+        return None
+
+    @property
+    def val_suggestion(self):
+        return self.provider_to_list(_SuggestionProvider, 'li.sa_sg')

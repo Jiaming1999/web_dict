@@ -25,7 +25,8 @@ from typing import Type
 
 from .exception import NoTranslationSegmentError
 from .prviders.base_provider import BaseProvider
-from .prviders.bing import CNBing
+from .prviders.cn_bing import CNBing
+from .prviders.cn_bing_s import CNBingSuggestion
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
 from .prviders.spanishdict import SpanishDict
@@ -194,3 +195,8 @@ class SpanishDictDictionary(OrphanDictionaryFactory):
 class CNBingDictionary(OrphanDictionaryFactory):
     def __init__(self, *, word: str = ''):
         super(CNBingDictionary, self).__init__(CNBing, word=word)
+
+
+class CNBingSuggestionDictionary(OrphanDictionaryFactory):
+    def __init__(self, *, word: str = ''):
+        super(CNBingSuggestionDictionary, self).__init__(CNBingSuggestion, word=word)

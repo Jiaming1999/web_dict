@@ -174,6 +174,7 @@ returns:
 ```
 ## cn.Bing.com
 - class `CNBingDictionary` supports `English > Simplified Chinese` only
+- class `CNBingSuggestion` 
 
 ## SpanishDict.com
 - class `SpanishDictDictionary` supports `Spanish > English` only
