@@ -72,7 +72,8 @@ class Vocabulary(BaseProvider):
 
     @property
     def url(self):
-        return f"https://www.vocabulary.com/dictionary/{self.word}"
+        # return f"https://www.vocabulary.com/dictionary/{self.word}"
+        return f"https://www.vocabulary.com/dictionary/definition.ajax?search={self.word}&lang=en"
 
     def __init__(self, word: str, seg=''):
         super(Vocabulary, self).__init__(word, seg)
