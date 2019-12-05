@@ -19,7 +19,7 @@
 #  received a copy of these additional terms immediately following the
 #  terms and conditions of the GNU Affero General Public License which
 #  accompanied this program.
-
+import re
 from abc import abstractmethod
 from typing import Type
 
@@ -30,6 +30,7 @@ from .prviders.cn_bing_s import CNBingSuggestion
 from .prviders.collinsdictionary import CollinsWeb
 from .prviders.lexico import Lexico
 from .prviders.spanishdict import SpanishDict
+from .prviders.urbandictionary import define
 from .prviders.vocabulary_s import VocabularySuggestion
 from .prviders.vocaublary import Vocabulary
 
@@ -207,3 +208,18 @@ class CNBingDictionary(OrphanDictionaryFactory):
 class CNBingSuggestionDictionary(OrphanDictionaryFactory):
     def __init__(self, *, word: str = ''):
         super(CNBingSuggestionDictionary, self).__init__(CNBingSuggestion, word=word)
+
+
+class UrbanDictionary:
+
+    def __init__(self, word: str = ''):
+        self.word = word
+
+    def do_search(self, word: str = ''):
+        if word:
+            self.word = word
+        ub = define(self.word)
+        return {
+            'definitions': [
+                re.sub(r"\s+", " ", d.definition.strip().replace("]", "").replace("[", "")) for d in ub]
+        }

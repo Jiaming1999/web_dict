@@ -130,3 +130,4 @@ class Lexico(BaseProvider):
         if not phrase_title_tag:
             return []
         return self.provider_to_list(_PhraseProvider, "section.etymology.etym > div.senseInnerWrapper")
+

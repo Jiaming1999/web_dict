@@ -36,7 +36,7 @@ setup(
     description='parser class for vaiouse online-dict, e.g. collinsdictionary/lexico/vocabulary/spanishdict etc.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='0.1.71',  # Start with a small number and increase it with every change you make
+    version='0.1.81',  # Start with a small number and increase it with every change you make
     license='agpl-3.0',  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     author='Kyle, Hwang',  # Type in your name
     author_email='upday7@163.com',  # Type in your E-Mail

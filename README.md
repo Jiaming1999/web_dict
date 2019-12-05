@@ -255,6 +255,27 @@ returns:
 }
 
 ```
+
+## UrbanDictionary.com
+- class `UrbanDictionary`
+
+```json 
+{
+    "definitions": [
+        "To be totally honest about something.",
+        "A song released in 1994 by a rapper named Jeru the Damaja. This song has one of the greatest beats ever composed for rap music. The beat has which has been widely compared to dripping water and hammers banging on pipes. That, and a scratch of Onyx screaming \"Uh-oh! HEADS UP cause we're dropping some shit\" It was also laced with tight lyrics by Jeru, a great song on a great album.",
+        "A song written by Billie Joe Armstrong and played by Green Day. It is a song about how a teenage boy has turned seventeen, who has secrets just like anybody. He is wondering if he should tell people about his secrets. His secrets are possibly concering his sexuality. He has also found out how to be a man.",
+        "(v) The act of shoving everything in a closet and calling it decent.",
+        "describing an item that looks really nice.",
+        "Having stopped taking drugs.",
+        "Referring to some new or icy attire. Usually directed toward shoes.",
+        "Exceedingly attractive, in an overtly sexual way.",
+        "in runescape when you lose all your money staking because of pid.",
+        "1.Action that people do when bored. Involve taking a pile of junk and moving it to somewhere else in the house. 2.Removing all useless part of a whole so that it is better."
+    ]
+}
+```
+
 ## SpanishDict.com
 - class `SpanishDictDictionary` supports `Spanish > English` only
 
