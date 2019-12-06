@@ -142,8 +142,8 @@ class CNBing(BaseProvider):
     @property
     def val_phone(self):
         p = re.compile(r"\[(?P<c>.+)\]")
-        m = re.search(p, self.select("div.hd_pr"))
-        m2 = re.search(p, self.select("div.hd_prUS"))
+        m = re.search(p, self.select("div.hd_pr")) if self.select("div.hd_pr") else None
+        m2 = re.search(p, self.select("div.hd_prUS")) if self.select("div.hd_prUS") else None
         return {
             'uk': m.group("c") if m else None,
             "us": m2.group("c") if m2 else None
