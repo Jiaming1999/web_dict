@@ -28,23 +28,23 @@ from ..parser import Parser
 
 
 class _SuggestionProvider(Parser):
-
     def val_phrase(self):
-        return parse_qs(self.bs['url'].split("?")[-1])['q'][0].replace("+", " ")
+        return parse_qs(self.bs["url"].split("?")[-1])["q"][0].replace("+", " ")
 
     def val_exp(self):
-        return self.bs['query'].replace(self.val_phrase(), "").strip()
+        return self.bs["query"].replace(self.val_phrase(), "").strip()
 
 
 class CNBingSuggestion(BaseProvider):
-
     @property
     def url(self):
-        return f"https://cn.bing.com/AS/Suggestions?scope=dictionary&pt=page.bingdict" \
-               f"&bq=dict&mkt=zh-cn&ds=bingdict&qry={self.word}" \
-               f"&cp=6&cvid=DCBD6682795F4F4CBE6CA0809F43ED3C"
+        return (
+            f"https://cn.bing.com/AS/Suggestions?scope=dictionary&pt=page.bingdict"
+            f"&bq=dict&mkt=zh-cn&ds=bingdict&qry={self.word}"
+            f"&cp=6&cvid=DCBD6682795F4F4CBE6CA0809F43ED3C"
+        )
 
-    def __init__(self, word: str, seg=''):
+    def __init__(self, word: str, seg=""):
         super(CNBingSuggestion, self).__init__(word, seg)
         self.seg = seg
 
@@ -54,4 +54,4 @@ class CNBingSuggestion(BaseProvider):
 
     @property
     def val_suggestion(self):
-        return self.provider_to_list(_SuggestionProvider, 'li.sa_sg')
+        return self.provider_to_list(_SuggestionProvider, "li.sa_sg")

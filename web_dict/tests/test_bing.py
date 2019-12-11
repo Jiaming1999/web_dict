@@ -27,14 +27,13 @@ from web_dict.core.factory import CNBingDictionary, CNBingSuggestionDictionary
 
 
 class VocabularyTest(unittest.TestCase):
-
     def setUp(self) -> None:
-        self.c = CNBingDictionary(word='python')
-        self.c2 = CNBingSuggestionDictionary(word='python')
+        self.c = CNBingDictionary(word="python")
+        self.c2 = CNBingSuggestionDictionary(word="python")
 
     def test_basic(self):
         # self.assertIsNotNone(self.c.do_search(), )
-        self.assertIsNotNone(self.c2.do_search(), )
+        self.assertIsNotNone(self.c2.do_search(),)
         # self._p(self.c.do_search())
         self._p(self.c2.do_search())
 
@@ -42,5 +41,5 @@ class VocabularyTest(unittest.TestCase):
         print(json.dumps(c, indent=4, ensure_ascii=False))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

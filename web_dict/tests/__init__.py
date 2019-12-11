@@ -19,4 +19,3 @@
 #  received a copy of these additional terms immediately following the
 #  terms and conditions of the GNU Affero General Public License which
 #  accompanied this program.
-

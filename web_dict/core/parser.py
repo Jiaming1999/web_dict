@@ -33,7 +33,7 @@ from .utils import STD_HEADERS
 
 
 def _norm_str(s: str):
-    return re.sub(r"\s+", ' ', unicodedata.normalize("NFKD", s)).strip()
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFKD", s)).strip()
 
 
 class Parser:
@@ -53,7 +53,7 @@ class Parser:
             if isinstance(self.markup, (BeautifulSoup, Tag)):
                 self._bs = self.markup
             else:
-                self._bs = BeautifulSoup(markup=self.markup, features='html.parser')
+                self._bs = BeautifulSoup(markup=self.markup, features="html.parser")
         return self._bs
 
     def select(self, p: str, one=True, text=True):
@@ -76,7 +76,13 @@ class Parser:
 
         fields = []
         fields.extend(self.to_dict_fields)
-        fields.extend([prop.lower().split('val_')[-1] for prop in dir(self) if prop.startswith("val_")])
+        fields.extend(
+            [
+                prop.lower().split("val_")[-1]
+                for prop in dir(self)
+                if prop.startswith("val_")
+            ]
+        )
 
         for field in set([f.lower() for f in fields]):
             try:
@@ -89,36 +95,35 @@ class Parser:
                     m = re.match(r"\((?P<c>.+)\)", val)
                     if m:
                         val = m.group("c")
-                if val not in [None, '']:
-                    _[field.split('val_')[-1]] = val
+                if val not in [None, ""]:
+                    _[field.split("val_")[-1]] = val
             except AttributeError:
                 ...
                 # _[field.split('val_')[-1]] = None
         return _
 
-    def provider_to_list(self, provider_cls, block_selector: Union[
-        str, Tuple[str, dict],
-    ], find_in_tag: Union[BeautifulSoup, Tag] = None, ):
+    def provider_to_list(
+        self,
+        provider_cls,
+        block_selector: Union[str, Tuple[str, dict],],
+        find_in_tag: Union[BeautifulSoup, Tag] = None,
+    ):
         if not find_in_tag:
             find_in_tag = self.bs
         try:
             if isinstance(block_selector, str):
                 blocks = self.select(block_selector, one=False, text=False)
             else:
-                blocks = find_in_tag.find_all(
-                    block_selector[0],
-                    **block_selector[1]
-                )
+                blocks = find_in_tag.find_all(block_selector[0], **block_selector[1])
         except AttributeError:
             return []
         return [provider_cls(d).to_dict() for d in blocks]
 
 
 class WebParser(Parser):
-
     def __init__(self, word: str):
         self.word = word
-        super(WebParser, self).__init__(markup='')
+        super(WebParser, self).__init__(markup="")
         self._rsp = None
 
     @property
@@ -143,5 +148,5 @@ class WebParser(Parser):
             try:
                 self._markup = self.rsp.content.decode()
             except HTTPError:
-                self._markup = ''
+                self._markup = ""
         return self._markup

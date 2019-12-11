@@ -24,9 +24,9 @@ import json
 from urllib.parse import quote as urlquote
 from urllib.request import urlopen
 
-UD_DEFID_URL = 'https://api.urbandictionary.com/v0/define?defid='
-UD_DEFINE_URL = 'https://api.urbandictionary.com/v0/define?term='
-UD_RANDOM_URL = 'https://api.urbandictionary.com/v0/random'
+UD_DEFID_URL = "https://api.urbandictionary.com/v0/define?defid="
+UD_DEFINE_URL = "https://api.urbandictionary.com/v0/define?term="
+UD_RANDOM_URL = "https://api.urbandictionary.com/v0/random"
 
 
 class UrbanDefinition(object):
@@ -38,35 +38,35 @@ class UrbanDefinition(object):
         self.downvotes = downvotes
 
     def __str__(self):
-        return '%s: %s%s (%d, %d)' % (
+        return "%s: %s%s (%d, %d)" % (
             self.word,
             self.definition[:50],
-            '...' if len(self.definition) > 50 else '',
+            "..." if len(self.definition) > 50 else "",
             self.upvotes,
-            self.downvotes
+            self.downvotes,
         )
 
 
 def _get_urban_json(url):
     f = urlopen(url)
-    data = json.loads(f.read().decode('utf-8'))
+    data = json.loads(f.read().decode("utf-8"))
     f.close()
     return data
 
 
 def _parse_urban_json(json, check_result=True):
     result = []
-    if json is None or any(e in json for e in ('error', 'errors')):
-        raise Exception('UD: Invalid input for Urban Dictionary API')
-    if check_result and ('list' not in json or len(json['list']) == 0):
+    if json is None or any(e in json for e in ("error", "errors")):
+        raise Exception("UD: Invalid input for Urban Dictionary API")
+    if check_result and ("list" not in json or len(json["list"]) == 0):
         return result
-    for definition in json['list']:
+    for definition in json["list"]:
         d = UrbanDefinition(
-            definition['word'],
-            definition['definition'],
-            definition['example'],
-            int(definition['thumbs_up']),
-            int(definition['thumbs_down'])
+            definition["word"],
+            definition["definition"],
+            definition["example"],
+            int(definition["thumbs_up"]),
+            int(definition["thumbs_down"]),
         )
         result.append(d)
     return result

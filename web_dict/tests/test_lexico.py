@@ -33,7 +33,7 @@ class CollinsTest(unittest.TestCase):
     #     self._p(c)
 
     def test_es_1(self):
-        c = Lexico('prueba', 'es')
+        c = Lexico("prueba", "es")
         self._p(c)
 
     # def test_english_1(self):
@@ -44,5 +44,5 @@ class CollinsTest(unittest.TestCase):
         print(json.dumps(c.to_dict(), indent=4, ensure_ascii=False))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

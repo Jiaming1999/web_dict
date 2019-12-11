@@ -25,16 +25,14 @@ from ..parser import Parser
 
 
 class _PrimaryDefinitionProvider(Parser):
-
     def val_pos(self):
-        return self.select('td.posList > a', one=False)
+        return self.select("td.posList > a", one=False)
 
     def val_exp(self):
         return self.select("td > div.def").replace(f"{self.val_pos()} ", "")
 
 
 class _FullDefinitionItemProvider(Parser):
-
     def val_pos(self):
         return self.select("h3.definition > a")
 
@@ -45,37 +43,33 @@ class _FullDefinitionItemProvider(Parser):
         sentences = self.select("div.example", one=False)
         sentence_highlight = self.select("div.example > strong", one=False)
         return [
-            {
-                "sentence": s,
-                "highlight": w
-            } for s, w in zip(sentences, sentence_highlight)
+            {"sentence": s, "highlight": w}
+            for s, w in zip(sentences, sentence_highlight)
         ]
 
 
 class _FullDefinitionGroupProvider(Parser):
-
     def val_items(self):
-        return self.provider_to_list(_FullDefinitionItemProvider, 'div.ordinal')
+        return self.provider_to_list(_FullDefinitionItemProvider, "div.ordinal")
 
 
 class _DefinitionsProvider(Parser):
     def val_primary(self):
-        return self.provider_to_list(_PrimaryDefinitionProvider, ('tr', {}))
+        return self.provider_to_list(_PrimaryDefinitionProvider, ("tr", {}))
 
     def val_full(self):
         return self.provider_to_list(
-            _FullDefinitionItemProvider, 'div.group > div.ordinal'
+            _FullDefinitionItemProvider, "div.group > div.ordinal"
         )
 
 
 class Vocabulary(BaseProvider):
-
     @property
     def url(self):
         # return f"https://www.vocabulary.com/dictionary/{self.word}"
         return f"https://www.vocabulary.com/dictionary/definition.ajax?search={self.word}&lang=en"
 
-    def __init__(self, word: str, seg=''):
+    def __init__(self, word: str, seg=""):
         super(Vocabulary, self).__init__(word, seg)
         self.seg = seg
 
@@ -85,9 +79,9 @@ class Vocabulary(BaseProvider):
 
     @property
     def val_audio(self):
-        audio_id = self.select("h1.dynamictext", text=False).a['data-audio']
+        audio_id = self.select("h1.dynamictext", text=False).a["data-audio"]
         if audio_id:
-            return f'https://audio.vocab.com/1.0/us/{audio_id}.mp3'
+            return f"https://audio.vocab.com/1.0/us/{audio_id}.mp3"
 
     @property
     def val_short_def(self):
@@ -111,6 +105,4 @@ class Vocabulary(BaseProvider):
 
     @property
     def val_defs(self):
-        return _DefinitionsProvider(
-            self.bs.find('div', class_='definitions')
-        ).to_dict()
+        return _DefinitionsProvider(self.bs.find("div", class_="definitions")).to_dict()

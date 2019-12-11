@@ -27,10 +27,9 @@ from web_dict.core.factory import UrbanDictionary
 
 
 class VocabularyTest(unittest.TestCase):
-
     def setUp(self) -> None:
         # self.c = VocabularyDictionary(word='python')
-        self.c = UrbanDictionary(word='Come out the fog')
+        self.c = UrbanDictionary(word="Come out the fog")
 
     def test_basic(self):
         self._p(self.c.do_search())
@@ -39,5 +38,5 @@ class VocabularyTest(unittest.TestCase):
         print(json.dumps(c, indent=4, ensure_ascii=False))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

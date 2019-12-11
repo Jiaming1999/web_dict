@@ -26,27 +26,25 @@ from ..parser import Parser
 
 
 class _SuggestionProvider(Parser):
-
     def val_phrase(self):
-        return self.select('span.word')
+        return self.select("span.word")
 
     def val_exp(self):
-        return self.select('span.definition')
+        return self.select("span.definition")
 
     def val_freq(self):
         try:
-            return float(self.bs.attrs.get('freq', 0))
+            return float(self.bs.attrs.get("freq", 0))
         except ValueError:
             return -1
 
 
 class VocabularySuggestion(BaseProvider):
-
     @property
     def url(self):
         return f"https://www.vocabulary.com/dictionary/autocomplete?search={self.word}"
 
-    def __init__(self, word: str, seg=''):
+    def __init__(self, word: str, seg=""):
         super(VocabularySuggestion, self).__init__(word, seg)
         self.seg = seg
 
@@ -56,4 +54,4 @@ class VocabularySuggestion(BaseProvider):
 
     @property
     def val_suggestion(self):
-        return self.provider_to_list(_SuggestionProvider, 'li')
+        return self.provider_to_list(_SuggestionProvider, "li")
