@@ -117,7 +117,7 @@ class Parser:
                 blocks = find_in_tag.find_all(block_selector[0], **block_selector[1])
         except AttributeError:
             return []
-        return [provider_cls(d).to_dict() for d in blocks]
+        return [d for d in [provider_cls(d).to_dict() for d in blocks] if d]
 
 
 class WebParser(Parser):

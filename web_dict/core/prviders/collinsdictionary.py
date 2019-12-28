@@ -91,9 +91,15 @@ class _ExampleProvider(Parser):
     @property
     def contents(self):
         _ = self.select("span.quote", one=False)
-        if len(_) == 2:
+        if _:
+            if len(_) == 2:
+                return _
+            r = [t.text.replace("⇒", "").strip() for t in self.bs.find_all("q")]
+            if r:
+                return r
             return _
-        return [t.text.replace("⇒", "").strip() for t in self.bs.find_all("q")]
+        else:
+            return [self.bs.text, ]
 
 
 class _SenseProvider(Parser):
@@ -137,6 +143,8 @@ class _SenseProvider(Parser):
 
         if not exp:
             exp = self.select("div.def")
+            if not exp and 'def' in self.bs.attrs['class']:
+                exp = self.bs.text.replace("\n", " ")
         return exp
 
     @property
