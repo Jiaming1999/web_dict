@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ setup(
     description="parser class for vaiouse online-dict, e.g. collinsdictionary/lexico/vocabulary/spanishdict etc.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version="0.1.85",  # Start with a small number and increase it with every change you make
+    version="0.1.86",  # Start with a small number and increase it with every change you make
     license="agpl-3.0",  # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     author="Kyle, Hwang",  # Type in your name
     author_email="upday7@163.com",  # Type in your E-Mail

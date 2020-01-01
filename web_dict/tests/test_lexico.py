@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ class CollinsTest(unittest.TestCase):
     #     self._p(c)
 
     def test_es_1(self):
-        c = Lexico("prueba", "es")
+        c = Lexico("impose", "en")
         self._p(c)
 
     # def test_english_1(self):

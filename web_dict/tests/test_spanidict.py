@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -28,11 +28,11 @@ from web_dict.core.factory import SpanishDictDictionary
 
 class VocabularyTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.c = SpanishDictDictionary(word="hacer")
+        self.c = SpanishDictDictionary()
 
     def test_basic(self):
-        self.assertIsNotNone(self.c.do_search(),)
-        self._p(self.c.do_search())
+        self.assertIsNotNone(self.c.do_search(word="hacer"),)
+        self._p(self.c.do_search(word="hacer"))
 
     def _p(self, c):
         print(json.dumps(c, indent=4, ensure_ascii=False))

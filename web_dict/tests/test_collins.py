@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -27,17 +27,17 @@ from web_dict.core.prviders.collinsdictionary import CollinsWeb
 
 
 class CollinsTest(unittest.TestCase):
-    def test_spanish_1(self):
-        c = CollinsWeb("hacer")
-        # self._p(c)
-
-    def test_spanish_2(self):
-        c = CollinsWeb("cómo")
-        self._p(c)
+    # def test_spanish_1(self):
+    #     c = CollinsWeb("hacer")
+    #     # self._p(c)
+    #
+    # def test_spanish_2(self):
+    #     c = CollinsWeb("cómo")
+    #     self._p(c)
 
     def test_english_1(self):
-        c = CollinsWeb("INTRANSITIVE", "english")
-        # self._p(c)
+        c = CollinsWeb("sentence", "english")
+        self._p(c)
 
     def _p(self, c):
         print(json.dumps(c.to_dict(), indent=4, ensure_ascii=False))

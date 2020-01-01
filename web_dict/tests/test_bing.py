@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -28,14 +28,14 @@ from web_dict.core.factory import CNBingDictionary, CNBingSuggestionDictionary
 
 class VocabularyTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.c = CNBingDictionary(word="python")
-        self.c2 = CNBingSuggestionDictionary(word="python")
+        self.c = CNBingDictionary()
+        #self.c2 = CNBingSuggestionDictionary(word="python")
 
     def test_basic(self):
-        # self.assertIsNotNone(self.c.do_search(), )
-        self.assertIsNotNone(self.c2.do_search(),)
-        # self._p(self.c.do_search())
-        self._p(self.c2.do_search())
+        self.assertIsNotNone(self.c.do_search("sun"), )
+        # self.assertIsNotNone(self.c2.do_search(),)
+        self._p(self.c.do_search())
+        # self._p(self.c2.do_search())
 
     def _p(self, c):
         print(json.dumps(c, indent=4, ensure_ascii=False))

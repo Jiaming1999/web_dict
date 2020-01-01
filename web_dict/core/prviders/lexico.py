@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -38,7 +38,7 @@ class _ExampleProvider(Parser):
     def val_trans(self):
         try:
             return self.select("em", one=False)[1]
-        except IndexError:
+        except (IndexError,TypeError):
             return None
 
 

@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -23,13 +23,13 @@
 import json
 import unittest
 
-from web_dict.core.factory import VocabularySuggestionDictionary
+from web_dict.core.factory import VocabularySuggestionDictionary, VocabularyDictionary
 
 
 class VocabularyTest(unittest.TestCase):
     def setUp(self) -> None:
-        # self.c = VocabularyDictionary(word='python')
-        self.c = VocabularySuggestionDictionary(word="python")
+        self.c = VocabularyDictionary(word='python')
+        # self.c = VocabularySuggestionDictionary(word="sun")
 
     def test_basic(self):
         self.assertIsNotNone(self.c.do_search(),)
