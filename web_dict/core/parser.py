@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -53,16 +53,23 @@ class Parser:
             if isinstance(self.markup, (BeautifulSoup, Tag)):
                 self._bs = self.markup
             else:
+                if not self.markup:
+                    return None
                 self._bs = BeautifulSoup(markup=self.markup, features="html.parser")
         return self._bs
 
     def select(self, p: str, one=True, text=True):
+
         if one:
+            if not self.bs:
+                return None
             t = self.bs.select_one(p)
             if t and text:
                 return _norm_str(t.text)
             return t
         else:
+            if not self.bs:
+                return [None, ]
             ts = self.bs.select(p)
             if ts and text:
                 return [_norm_str(t.text) for t in ts]
@@ -103,10 +110,10 @@ class Parser:
         return _
 
     def provider_to_list(
-        self,
-        provider_cls,
-        block_selector: Union[str, Tuple[str, dict],],
-        find_in_tag: Union[BeautifulSoup, Tag] = None,
+            self,
+            provider_cls,
+            block_selector: Union[str, Tuple[str, dict],],
+            find_in_tag: Union[BeautifulSoup, Tag] = None,
     ):
         if not find_in_tag:
             find_in_tag = self.bs
