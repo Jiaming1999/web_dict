@@ -33,7 +33,7 @@ class CollinsTest(unittest.TestCase):
     #     self._p(c)
 
     def test_es_1(self):
-        c = Lexico("impose", "en")
+        c = Lexico("in", "en")
         self._p(c)
 
     # def test_english_1(self):
