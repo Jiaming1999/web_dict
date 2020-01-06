@@ -1,4 +1,4 @@
-#  Copyright (C) 2016-2019  Kyle.Hwang <upday7[at]163.com>
+#  Copyright (C) 2016-2020  Kyle.Hwang <upday7[at]163.com>
 #  #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ from .prviders.spanishdict import SpanishDict
 from .prviders.urbandictionary import define
 from .prviders.vocabulary_s import VocabularySuggestion
 from .prviders.vocaublary import Vocabulary
+from .prviders.youdao_ec import YoudaoEC
 
 
 class DictionaryFactory:
@@ -42,7 +43,7 @@ class DictionaryFactory:
         self._in_lang = None
         self._target_lang = None
 
-    def __enter__(self,):
+    def __enter__(self, ):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -107,8 +108,8 @@ class CollinsDictionary(DictionaryFactory):
     @property
     def segment(self) -> str:
         if (
-            self._in_lang not in self.lang_codes
-            or self._target_lang not in self.lang_codes
+                self._in_lang not in self.lang_codes
+                or self._target_lang not in self.lang_codes
         ):
             raise NoTranslationSegmentError(
                 str(self._provider_cls), self._in_lang, self._target_lang
@@ -162,8 +163,8 @@ class OxfordDictionary(DictionaryFactory):
     @property
     def segment(self) -> str:
         if (
-            self._in_lang not in self.lang_codes
-            or self._target_lang not in self.lang_codes
+                self._in_lang not in self.lang_codes
+                or self._target_lang not in self.lang_codes
         ):
             raise NoTranslationSegmentError(
                 str(self._provider_cls), self._in_lang, self._target_lang
@@ -215,6 +216,11 @@ class CNBingDictionary(OrphanDictionaryFactory):
 class CNBingSuggestionDictionary(OrphanDictionaryFactory):
     def __init__(self, *, word: str = ""):
         super(CNBingSuggestionDictionary, self).__init__(CNBingSuggestion, word=word)
+
+
+class YoudaoDictionary(OrphanDictionaryFactory):
+    def __init__(self, *, word: str = ""):
+        super(YoudaoDictionary, self).__init__(YoudaoEC, word=word)
 
 
 class UrbanDictionary:
